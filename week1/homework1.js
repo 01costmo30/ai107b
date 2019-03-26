@@ -4,11 +4,11 @@
 // 4次方函數要找兩個低點
 
 function q(x) {
-  return -1*(x*x + 4*x - 8);
+  return -1*(x*x + 4*x - 8)
 }
 
 function f(x) {
-  return -1*(x*x*x*x - 10*x*x*x + 20*x*x + 5*x + 7);
+  return -1*(x*x*x*x - 10*x*x*x + 20*x*x + 5*x + 7)
 }
 
 var dx = 0.01
