@@ -7,6 +7,7 @@
 // ---------
 // 參考 - gomoku.js
 // 　　 - graphSearch.js
+// 　　 - 聖偉的答案
 // mermer:
 //  很棒我寫的不是人工智慧是人工解題QQ
 //  明明看了程式也改了好幾次但到最後寫出來還是完全往反方向走QQ
@@ -22,6 +23,8 @@ var Board = function (rMax, cMax) {
   this.B = []
   this.rMax = rMax
   this.cMax = cMax
+  this.dir = '-'
+  this.old_B = null
   for (var r = 0; r < rMax; r++) {
     this.B[r] = []
     for (var c = 0; c < cMax; c++) {
@@ -30,22 +33,32 @@ var Board = function (rMax, cMax) {
         this.B[r][c] = x.toString(16)
       } else {
         this.B[r][c] = '*'
+        this.x = r
+        this.y = c
       }
     }
   }
 }
 
-Board.prototype.toString = function () {
+Board.prototype.toString = function (x) {
   var str = '---------\n'
-  for (var r = 0; r < this.rMax; r++) {
-    str += "|" + ' ' + this.B[r].join(' ') + ' ' + "|" + '\n'
+  if (x == 'b') {
+    for (var r = 0; r < this.rMax; r++) {
+      str += "|" + ' ' + this.B[r].join(' ') + ' ' + "|" + '\n'
+    }
+    str += '---------'
+    return str
+  }else if (x == 'old') {
+    for (var r = 0; r < this.rMax; r++) {
+      str += "|" + ' ' + this.old_B[r].join(' ') + ' ' + "|" + '\n'
+    }
+    str += '---------'
+    return str
   }
-  str += '---------'
-  return str
 }
 
-Board.prototype.show = function () {
-  console.log(this.toString())
+Board.prototype.show = function (x) {
+  console.log(this.toString(x))
 }
 
 Board.prototype.clone = function () {
@@ -59,51 +72,62 @@ var keyboard = function (d) { //按鍵參數
 }
 
 var Move = function (board, Move) { // 移動參數
-  p = checkposition(board)
-  r = p.r
-  c = p.c
+  r = board.r
+  c = board.c
   if (Move < 0.25) {
-    printf('↓:')
     if ((r + 1) < board.rMax) {
+      printf('↓:')
       board.B[r][c] = board.B[r + 1][c]
       board.B[r + 1][c] = '*'
-      return 0
-    } else {
+      board.dir = 's'
+      board.r += 1
+      // return board
+      // return '↓'
+    } /*else {
       throw 'Valid Move: can not move down!'
-    }
+    }*/
   } else if (Move >= 0.25 && Move < 0.5) {
-    printf('←:')
     if ((c - 1) >= 0) {
-      board.B[r][c] = board.B[r][c - 1]
-      board.B[r][c - 1] = '*'
-      return 0
-    } else {
+      printf('←:')
+      board.B[r][c] = board.B[r][c-1]
+      board.B[r][c-1] = '*'
+      board.dir = 'a'
+      board.c -= 1
+      // return board
+      // return '←'
+    }/* else {
       throw 'Valid Move: can not move left!'
-    }
+    }*/
   } else if (Move >= 0.5 && Move < 0.75) {
     printf('↑:')
     if ((r - 1) >= 0) {
       board.B[r][c] = board.B[r - 1][c]
       board.B[r - 1][c] = '*'
-      return 0
-    } else {
+      board.dir = 'w'
+      board.r -= 1
+      // return board
+      // return '↑'
+    }/* else {
       throw 'Valid Move: can not move up!'
-    }
+    }*/
   } else if (Move >= 0.75 && Move < 1) {
     printf('→:')
     if ((c + 1) < board.cMax) {
-      board.B[r][c] = board.B[r][c + 1]
-      board.B[r][c + 1] = '*'
-      return 0
-    } else {
+      board.B[r][c] = board.B[r][c-1]
+      board.B[r][c-1] = '*'
+      board.dir = 'd'
+      board.c += 1
+      // return board
+      // return '→'
+    }/* else {
       throw 'Valid Move: can not move right!'
-    }
-  } else {
+    }*/
+  }/* else {
     throw 'Valid Move!'
-  }
+  }*/
 }
 
-var checkposition = function (p) { //檢查[*]的位置
+/*var checkposition = function (p) { //檢查[*]的位置
   for (var row = 0; row < p.rMax; row++) {
     for (var cal = 0; cal < p.cMax; cal++) {
       if (p.B[row][cal] == '*') {
@@ -112,13 +136,66 @@ var checkposition = function (p) { //檢查[*]的位置
       }
     }
   }
+}*/
+var correct_puz = [[0, 1, 2],
+[3, 4, 5],
+[6, 7, "*"]]
+
+
+var standardmove = function (puz) {
+  var old_puz = puz.clone()
+  if (old_ouz.B.toString() == correct_puz.toString()) {
+    old_puz.show('b')
+    return old_puz.old_B
+  }
+  var x = old_puz.r, y = old_puz.c
+  if (old_puz.dir != 'w') {
+    var new_puz = old_puz.clone()
+    if ((x-1)>=0) {
+      p.Move(keyboard('w'))
+      new_puz.old_B = old_puz.B
+      puz = new_puz.clone()
+    }
+  }if (old_puz.dir != 'd') {
+    var new_puz = old_puz.clone()
+    if ((y+1)<puz.cMax) {
+      p.Move(keyboard('d'))
+      new_puz.old_B = old_puz.B
+      puz = new_puz.clone()
+    }
+  }if (old_puz.dir != 's') {
+    var new_puz = old_puz.clone()
+    if ((x+1)<puz.rMax) {
+      p.Move(keyboard('s'))
+      new_puz.old_B = old_puz.B
+      puz = new_puz.clone()
+    }
+  }if (old_puz.dir != 'a') {
+    var new_puz = old_puz.clone()
+    if ((y-1)>=0) {
+      p.Move(keyboard('a'))
+      new_puz.old_B = old_puz.B
+      puz = new_puz.clone()
+    }
+  }
+  var result = standardmove(puz)
+  if (result != null) {
+    if (result.toString() == old_puz.B.toString()) {
+      result.show('old')
+      return old_puz.old_B
+    }else
+    return result
+  }
 }
 
 var start = function (n) {
   var p = new Board(n, n)
   console.log('origin puzzle:\n')
-  p.show()
-  while (!checkcomplete(p)) {
+  //console.log(p)
+  p.show('b')
+  Move(p, 0.5)
+  //console.log(p)
+  /*while (!checkcomplete(p)) {
     for (var i = 0; i < (Math.pow(2, n) * n); i++) {
       while (1) {
         try {
@@ -130,12 +207,11 @@ var start = function (n) {
         }
       }
     }
-  }
+  }*/
   console.log('\nhere go the puzzle:\n')
-  p.show()
-  // console.log(vector(p))
-  //console.log('* is at:(%s ,%s)', Pos[0], Pos[1])
-  compute(p)
+  p.show('b')
+  //standardmove(p)
+  //compute(p)
 }
 
 var compute = function (p) {
@@ -282,8 +358,8 @@ var adjustMove = function (p) {
             Move(p, keyboard('d'))
           }
         }
-      }
-      
+      }var sa = score(p)
+      console.log(sa.totals)
       t++
     }
   }
@@ -306,7 +382,7 @@ var score = function (p) {
   var sa = new scorearray(p)
   var v = vector(p)
   sa = vectorscore(p, v, sa)
-  sa = positionscore(p, sa)
+  // sa = positionscore(p, sa)
   return sa
 }
 
@@ -320,6 +396,7 @@ var vectorscore = function (p, v, sa) {
         // console.log("%d: ", x, xp, xlength)
         for (var i = 0; i < xlength; i++) {
           sa.score[row][cal] -= (1 + (2 * i))
+          sa.totals -= (1 + (2 * i))
         }
       }
     }
@@ -362,11 +439,13 @@ var pscoreing = function (p, pos, sa, r) {
 
 var scorearray = function (p) {
   this.score = {}
+  this.totals = 0
   for (var row = 0; row < p.rMax; row++) {
     this.score[row] = {}
     for (var cal = 0; cal < p.cMax; cal++) {
       if (p.B[row][cal] != "*") {
         this.score[row][cal] = 10
+        this.totals += 10
       } else {
         this.score[row][cal] = "-"
       }

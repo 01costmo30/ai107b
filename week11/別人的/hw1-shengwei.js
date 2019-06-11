@@ -15,11 +15,11 @@ function search(obj) { //傳入陣列 0的位置 方向 廣度搜尋
     var old_obj = obj.shift() //從物件裡面取最前面的的出來
     if (old_obj.puzzle.toString() == correct_puz.toString()) {
         var str = '---------\n'
-            for (var r = 0; r < 3; r++) {
-              str += "|" + ' ' + old_obj.puzzle[r].join(' ') + ' ' + "|" + '\n'
-            }
-            str += '---------'
-            console.log(str)
+        for (var r = 0; r < 3; r++) {
+            str += "|" + ' ' + old_obj.puzzle[r].join(' ') + ' ' + "|" + '\n'
+        }
+        str += '---------'
+        console.log(str)
         return old_obj.old_puzzle
     }
     var x = old_obj.x, y = old_obj.y
